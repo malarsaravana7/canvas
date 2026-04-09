@@ -4,9 +4,22 @@ export const getPortPosition = (
 node: DiagramNode,
 port: PortDefinition)
 : Point => {
+  const rawX = node.x + port.normalizedX * node.width;
+  const rawY = node.y + port.normalizedY * node.height;
+
+  if (!node.rotation) {
+    return { x: rawX, y: rawY };
+  }
+
+  const rad = node.rotation * Math.PI / 180;
+  const cx = node.x + node.width / 2;
+  const cy = node.y + node.height / 2;
+  const dx = rawX - cx;
+  const dy = rawY - cy;
+
   return {
-    x: node.x + port.normalizedX * node.width,
-    y: node.y + port.normalizedY * node.height
+    x: cx + dx * Math.cos(rad) - dy * Math.sin(rad),
+    y: cy + dx * Math.sin(rad) + dy * Math.cos(rad)
   };
 };
 
@@ -53,11 +66,25 @@ point: Point)
   // Iterate in reverse so topmost (last-drawn) node is found first
   for (let i = nodes.length - 1; i >= 0; i--) {
     const node = nodes[i];
+
+    let testX = point.x;
+    let testY = point.y;
+
+    if (node.rotation) {
+      const rad = -node.rotation * Math.PI / 180;
+      const cx = node.x + node.width / 2;
+      const cy = node.y + node.height / 2;
+      const dx = point.x - cx;
+      const dy = point.y - cy;
+      testX = cx + dx * Math.cos(rad) - dy * Math.sin(rad);
+      testY = cy + dx * Math.sin(rad) + dy * Math.cos(rad);
+    }
+
     if (
-    point.x >= node.x &&
-    point.x <= node.x + node.width &&
-    point.y >= node.y &&
-    point.y <= node.y + node.height)
+    testX >= node.x &&
+    testX <= node.x + node.width &&
+    testY >= node.y &&
+    testY <= node.y + node.height)
     {
       return node;
     }

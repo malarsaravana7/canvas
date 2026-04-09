@@ -14,7 +14,10 @@ export type ToolType =
 'resistor' |
 'capacitor' |
 'voltage-source' |
-'ground';
+'ground' |
+'radio' |
+'monocell-battery' |
+'multicell-battery';
 
 export interface PortDefinition {
   id: string;
@@ -41,6 +44,7 @@ export interface DiagramNode {
   y: number;
   width: number;
   height: number;
+  rotation?: number;
   label: string;
   style: NodeStyle;
   ports: PortDefinition[];

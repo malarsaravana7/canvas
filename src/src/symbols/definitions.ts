@@ -288,5 +288,77 @@ export const SYMBOL_DEFINITIONS: Record<string, SymbolDefinition> = {
     }],
 
     icon: '<path d="M16,4 L16,16 M8,16 L24,16 M11,20 L21,20 M14,24 L18,24" fill="none" stroke="currentColor" stroke-width="2"/>'
+  },
+  radio: {
+    type: 'radio',
+    category: 'electrical',
+    label: 'Radio',
+    defaultWidth: 60,
+    defaultHeight: 70,
+    ports: [
+    {
+      id: 'top',
+      label: 'Antenna',
+      position: 'top',
+      normalizedX: 0.5,
+      normalizedY: 0
+    },
+    {
+      id: 'bottom',
+      label: 'Ground',
+      position: 'bottom',
+      normalizedX: 0.5,
+      normalizedY: 1
+    }],
+
+    icon: '<path d="M16,4 L16,18" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="20" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24,12 A10,10 0 0,0 24,28" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M27,9 A14,14 0 0,0 27,31" fill="none" stroke="currentColor" stroke-width="1.5"/>'
+  },
+  'monocell-battery': {
+    type: 'monocell-battery',
+    category: 'electrical',
+    label: 'Monocell Battery',
+    defaultWidth: 40,
+    defaultHeight: 60,
+    ports: [
+    {
+      id: 'top',
+      label: 'Positive',
+      position: 'top',
+      normalizedX: 0.5,
+      normalizedY: 0
+    },
+    {
+      id: 'bottom',
+      label: 'Negative',
+      position: 'bottom',
+      normalizedX: 0.5,
+      normalizedY: 1
+    }],
+
+    icon: '<path d="M16,4 L16,12 M8,12 L24,12 M11,16 L21,16 M16,16 L16,28" fill="none" stroke="currentColor" stroke-width="2"/>'
+  },
+  'multicell-battery': {
+    type: 'multicell-battery',
+    category: 'electrical',
+    label: 'Multicell Battery',
+    defaultWidth: 40,
+    defaultHeight: 60,
+    ports: [
+    {
+      id: 'top',
+      label: 'Positive',
+      position: 'top',
+      normalizedX: 0.5,
+      normalizedY: 0
+    },
+    {
+      id: 'bottom',
+      label: 'Negative',
+      position: 'bottom',
+      normalizedX: 0.5,
+      normalizedY: 1
+    }],
+
+    icon: '<path d="M16,2 L16,7 M8,7 L24,7 M11,10 L21,10 M8,13 L24,13 M11,16 L21,16 M8,19 L24,19 M11,22 L21,22 M16,22 L16,28" fill="none" stroke="currentColor" stroke-width="2"/>'
   }
 };

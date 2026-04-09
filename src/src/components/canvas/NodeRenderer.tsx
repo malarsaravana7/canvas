@@ -85,7 +85,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({ node }) => {
   GeneralSymbolRenderer;
   return (
     <g
-      transform={`translate(${node.x}, ${node.y})`}
+      transform={`translate(${node.x}, ${node.y}) ${node.rotation ? `rotate(${node.rotation}, ${node.width / 2}, ${node.height / 2})` : ''}`}
       onPointerDown={handlePointerDown}
       onPointerEnter={() => setHoveredNode(node.id)}
       onPointerLeave={() => setHoveredNode(null)}
@@ -177,7 +177,8 @@ interface ResizeHandlesProps {
   node: DiagramNode;
 }
 const ResizeHandles: React.FC<ResizeHandlesProps> = ({ node }) => {
-  const { resizeNode, pushUndo, saveToStorage, viewport } = useDiagramStore();
+  const { resizeNode, updateNode, pushUndo, saveToStorage, viewport } =
+  useDiagramStore();
   const handleSize = 6;
   const handles = [
   {
@@ -245,16 +246,12 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({ node }) => {
       let newH = startH;
       let newX = startNX;
       let newY = startNY;
-      if (handleId.includes('e')) {
-        newW = Math.max(20, startW + dx);
-      }
+      if (handleId.includes('e')) newW = Math.max(20, startW + dx);
       if (handleId.includes('w')) {
         newW = Math.max(20, startW - dx);
         newX = startNX + startW - newW;
       }
-      if (handleId.includes('s')) {
-        newH = Math.max(20, startH + dy);
-      }
+      if (handleId.includes('s')) newH = Math.max(20, startH + dy);
       if (handleId.includes('n')) {
         newH = Math.max(20, startH - dy);
         newY = startNY + startH - newH;
@@ -270,8 +267,72 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({ node }) => {
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
   };
+  const handleRotateStart = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    const rect = (e.target as Element).getBoundingClientRect();
+    // Estimate center of node in screen coordinates
+    // The rotation handle is at (width/2, -24) in local space
+    const handleScreenX = rect.left + rect.width / 2;
+    const handleScreenY = rect.top + rect.height / 2;
+    // Distance from handle to center in local space is height/2 + 24
+    const localDist = node.height / 2 + 24;
+    const screenDist = localDist * viewport.zoom;
+    // We can approximate the center of the node in screen space
+    // by using the current rotation
+    const currentRotRad = (node.rotation || 0) * Math.PI / 180;
+    const centerScreenX = handleScreenX + Math.sin(currentRotRad) * screenDist;
+    const centerScreenY = handleScreenY + Math.cos(currentRotRad) * screenDist;
+    const onMove = (me: PointerEvent) => {
+      const dx = me.clientX - centerScreenX;
+      const dy = me.clientY - centerScreenY;
+      // Calculate angle in degrees
+      let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      // Adjust so that pointing straight up is 0 degrees
+      angle += 90;
+      if (angle < 0) angle += 360;
+      // Snap to 15 degrees if shift is held
+      if (me.shiftKey) {
+        angle = Math.round(angle / 15) * 15;
+      }
+      updateNode(node.id, {
+        rotation: Math.round(angle)
+      });
+    };
+    const onUp = () => {
+      pushUndo();
+      saveToStorage();
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
   return (
     <>
+      {/* Rotation Handle */}
+      <line
+        x1={node.width / 2}
+        y1={0}
+        x2={node.width / 2}
+        y2={-24}
+        stroke="#3b82f6"
+        strokeWidth={1}
+        strokeDasharray="2 2" />
+      
+      <circle
+        cx={node.width / 2}
+        cy={-24}
+        r={5}
+        fill="#ffffff"
+        stroke="#3b82f6"
+        strokeWidth={1.5}
+        style={{
+          cursor: 'grab'
+        }}
+        onPointerDown={handleRotateStart} />
+      
+
+      {/* Resize Handles */}
       {handles.map((h) =>
       <rect
         key={h.id}

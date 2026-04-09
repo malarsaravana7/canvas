@@ -151,6 +151,27 @@ export function Toolbar() {
         }
         label="Ground" />
       
+      <ToolButton
+        tool="radio"
+        icon={
+        <ElectricalIcon path='<path d="M16,4 L16,18"/><circle cx="16" cy="20" r="6"/><path d="M24,12 A10,10 0 0,0 24,28"/><path d="M27,9 A14,14 0 0,0 27,31"/>' />
+        }
+        label="Radio" />
+      
+      <ToolButton
+        tool="monocell-battery"
+        icon={
+        <ElectricalIcon path='<path d="M16,4 L16,12 M8,12 L24,12 M11,16 L21,16 M16,16 L16,28"/>' />
+        }
+        label="Monocell Battery" />
+      
+      <ToolButton
+        tool="multicell-battery"
+        icon={
+        <ElectricalIcon path='<path d="M16,2 L16,7 M8,7 L24,7 M11,10 L21,10 M8,13 L24,13 M11,16 L21,16 M8,19 L24,19 M11,22 L21,22 M16,22 L16,28"/>' />
+        }
+        label="Multicell Battery" />
+      
 
       <Separator />
 

@@ -46,6 +46,10 @@ export function InspectorPanel() {
         updateNode(node.id, {
           y: Number(value)
         });
+      } else if (field === 'rotation') {
+        updateNode(node.id, {
+          rotation: Number(value) % 360
+        });
       } else if (field === 'width') {
         updateNode(node.id, {
           width: Math.max(20, Number(value))
@@ -106,8 +110,8 @@ export function InspectorPanel() {
             
           </div>
 
-          {/* Position */}
-          <div className="grid grid-cols-2 gap-2">
+          {/* Position & Rotation */}
+          <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="block text-gray-400 mb-0.5">X</label>
               <input
@@ -124,6 +128,16 @@ export function InspectorPanel() {
                 type="number"
                 value={Math.round(node.y)}
                 onChange={(e) => handleChange('y', e.target.value)}
+                onBlur={commitChange}
+                className="w-full px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400" />
+              
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-0.5">Rot (°)</label>
+              <input
+                type="number"
+                value={node.rotation || 0}
+                onChange={(e) => handleChange('rotation', e.target.value)}
                 onBlur={commitChange}
                 className="w-full px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400" />
               
